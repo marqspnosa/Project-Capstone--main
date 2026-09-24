@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A student planner with assignments, courses, and an educational quiz game.">
   <title>Study Planner</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <section id="authView" class="auth-page">
     <div class="auth-card">
-      <div class="auth-logo"><span class="logo-mark">✓</span> Study Planner</div>
+      <div class="auth-logo"><span class="logo-mark">S</span> Study Planner</div>
       <h1 id="authTitle">Welcome back</h1>
       <p id="authSubtitle">Sign in to access your study planner.</p>
-      <div id="authMessage" class="auth-message hidden"></div>
+      <div id="authMessage" class="auth-message hidden" role="status"></div>
       <form id="authForm">
         <label>Email address<input id="email" type="email" required autocomplete="email" placeholder="student@example.com"></label>
         <label>Password<input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters"></label>
@@ -21,17 +22,25 @@
       <button class="auth-switch" id="authSwitch" type="button">Need an account? Sign up</button>
     </div>
   </section>
+
   <aside class="sidebar hidden" id="sidebar">
-    <div class="logo"><span class="logo-mark">✓</span> Study Planner</div>
+    <div class="logo"><span class="logo-mark">S</span> Study Planner</div>
     <button class="nav active" data-view="dashboard"><span>▦</span> Dashboard</button>
     <button class="nav" data-view="assignments"><span>✓</span> Assignments</button>
     <button class="nav" data-view="courses"><span>▤</span> Courses</button>
+    <button class="nav" data-view="game"><span>★</span> Study Quest</button>
+    <button class="nav" data-view="profile"><span>●</span> Profile</button>
     <button class="nav" data-view="settings"><span>⚙</span> Settings</button>
     <div class="account-area"><small id="userEmail"></small><button id="signOutBtn" type="button">Sign Out</button></div>
   </aside>
+
   <main class="main hidden" id="appMain">
-    <header class="topbar"><div><h1 id="pageTitle">Dashboard</h1><p id="dateText"></p></div><button class="primary" id="addBtn">+ Add Assignment</button></header>
-    <div id="errorMessage" class="error-message hidden"></div>
+    <header class="topbar">
+      <div><h1 id="pageTitle">Dashboard</h1><p id="dateText"></p></div>
+      <button class="primary" id="addBtn" type="button">+ Add Assignment</button>
+    </header>
+    <div id="errorMessage" class="error-message hidden" role="alert"></div>
+
     <section id="dashboardView" class="view">
       <div class="welcome"><div><div class="welcome-label">YOUR STUDY SPACE</div><h2>Welcome back, Student! 👋</h2><p>Stay organized and keep your schoolwork on track.</p></div><div class="welcome-art">📚</div></div>
       <div class="stats">
@@ -40,19 +49,81 @@
         <div class="card"><span class="stat-icon green">✓</span><div><strong id="completedCount">0</strong><small>Completed</small></div></div>
         <div class="card"><span class="stat-icon red">!</span><div><strong id="overdueCount">0</strong><small>Overdue</small></div></div>
       </div>
-      <div class="panel"><div class="panel-head"><h2>Upcoming Assignments</h2><button class="text-btn" id="seeAllBtn">See all</button></div><div id="upcomingList"></div></div>
+      <div class="panel"><div class="panel-head"><h2>Upcoming Assignments</h2><button class="text-btn" id="seeAllBtn" type="button">See all</button></div><div id="upcomingList"></div></div>
     </section>
+
     <section id="assignmentsView" class="view hidden">
       <div class="toolbar"><input id="searchInput" type="search" placeholder="Search assignments..."><select id="filterPriority"><option value="all">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select><select id="filterStatus"><option value="all">All status</option><option>Pending</option><option>Completed</option></select></div>
       <div class="panel"><div id="assignmentList"></div></div>
     </section>
-    <section id="coursesView" class="view hidden"><div class="panel"><div class="panel-head"><h2>My Courses</h2><button class="primary small" id="addCourseBtn">+ Add Course</button></div><div id="courseList"></div></div></section>
-    <section id="settingsView" class="view hidden"><div class="panel settings"><h2>Settings</h2><p id="connectionStatus">Connecting to Supabase...</p><button class="danger" id="clearDataBtn">Clear All Data</button></div></section>
+
+    <section id="coursesView" class="view hidden"><div class="panel"><div class="panel-head"><h2>My Courses</h2><button class="primary small" id="addCourseBtn" type="button">+ Add Course</button></div><div id="courseList"></div></div></section>
+
+    <section id="gameView" class="view hidden">
+      <div class="game-hero">
+        <div><div class="welcome-label">LEARN WHILE YOU PLAY</div><h2>Study Quest</h2><p>Choose a subject, answer 10 questions, and build your best streak.</p></div>
+        <div class="game-best"><small>YOUR BEST</small><strong id="gameBestScore">0 / 10</strong></div>
+      </div>
+
+      <div id="gameSetup" class="panel game-setup">
+        <h2>Choose your subject</h2>
+        <p>Every round includes 10 multiple-choice questions.</p>
+        <div class="subject-grid" role="group" aria-label="Quiz subject">
+          <button class="subject-card selected" data-category="Math" type="button"><span>➗</span><strong>Math</strong><small>Numbers & equations</small></button>
+          <button class="subject-card" data-category="Science" type="button"><span>🔬</span><strong>Science</strong><small>Life, Earth & space</small></button>
+          <button class="subject-card" data-category="Programming" type="button"><span>💻</span><strong>Programming</strong><small>Code & computers</small></button>
+          <button class="subject-card" data-category="English" type="button"><span>📖</span><strong>English</strong><small>Grammar & vocabulary</small></button>
+        </div>
+        <button id="startGameBtn" class="primary game-start" type="button">Start Math Quest</button>
+      </div>
+
+      <div id="gamePlay" class="panel game-play hidden">
+        <div class="game-status">
+          <span id="questionCount">Question 1 of 10</span>
+          <div class="game-counters"><span>⭐<strong id="scoreCount">0</strong></span><span>🔥 <strong id="streakCount">0</strong></span></div>
+        </div>
+        <div class="progress-track"><div id="gameProgress" class="progress-fill"></div></div>
+        <div class="timer-row"><span id="gameCategoryLabel">Math Quest</span><span id="timerText">20 seconds</span></div>
+        <h2 id="questionText" class="question-text"></h2>
+        <div id="answerOptions" class="answer-options"></div>
+        <div id="answerFeedback" class="answer-feedback hidden" role="status"></div>
+        <button id="nextQuestionBtn" class="primary next-question hidden" type="button">Next Question</button>
+      </div>
+
+      <div id="gameResult" class="panel game-result hidden">
+        <div id="resultEmoji" class="result-emoji">🏆</div>
+        <h2 id="resultTitle">Quest complete!</h2>
+        <p id="resultMessage"></p>
+        <div class="result-score"><strong id="finalScore">0 / 10</strong><span id="finalPercent">0%</span></div>
+        <div class="result-details"><div><small>BEST STREAK</small><strong id="finalStreak">0</strong></div><div><small>POINTS</small><strong id="finalPoints">0</strong></div></div>
+        <p id="saveStatus" class="save-status"></p>
+        <div class="result-actions"><button id="playAgainBtn" class="primary" type="button">Play Again</button><button id="changeSubjectBtn" class="secondary" type="button">Change Subject</button></div>
+      </div>
+    </section>
+
+    <section id="profileView" class="view hidden">
+      <div class="profile-header panel"><div class="profile-avatar" id="profileAvatar">S</div><div><h2 id="profileGreeting">Student</h2><p id="profileEmail"></p><small id="profileJoined"></small></div></div>
+      <div class="profile-stats">
+        <div class="panel"><strong id="profileCompleted">0</strong><span>Assignments completed</span></div>
+        <div class="panel"><strong id="profileBest">0 / 10</strong><span>Best quest score</span></div>
+        <div class="panel"><strong id="profileRounds">0</strong><span>Quests played</span></div>
+      </div>
+      <div class="profile-columns">
+        <div class="panel"><h2>Edit profile</h2><p>Choose the name shown on your profile.</p><form id="profileForm"><label>Display name<input id="profileName" type="text" maxlength="60" required autocomplete="nickname" placeholder="Your name"></label><button class="primary" id="saveProfileBtn" type="submit">Save Profile</button></form><p id="profileMessage" class="profile-message" role="status"></p></div>
+        <div class="panel"><h2>Recent Study Quests</h2><div id="profileHistory" class="profile-history"><p>Loading your results...</p></div></div>
+      </div>
+    </section>
+
+    <section id="settingsView" class="view hidden"><div class="panel settings"><h2>Settings</h2><p id="connectionStatus">Connecting to Supabase...</p><button class="danger" id="clearDataBtn" type="button">Clear All Data</button></div></section>
   </main>
-  <div class="modal hidden" id="assignmentModal"><div class="modal-box"><button class="close" id="closeModal">×</button><h2 id="modalTitle">Add Assignment</h2><form id="assignmentForm"><label>Assignment title<input id="title" required placeholder="Example: SQL Assignment"></label><label>Course<select id="course" required></select></label><label>Description<textarea id="description" placeholder="What do you need to complete?"></textarea></label><div class="form-row"><label>Due date<input id="dueDate" type="date" required></label><label>Priority<select id="priority"><option>High</option><option selected>Medium</option><option>Low</option></select></label></div><button class="primary full" type="submit">Save Assignment</button></form></div></div>
-  <div class="modal hidden" id="courseModal"><div class="modal-box"><button class="close" id="closeCourseModal">×</button><h2>Add Course</h2><form id="courseForm"><label>Course name<input id="courseName" required placeholder="Example: Software Engineering"></label><button class="primary full" type="submit">Add Course</button></form></div></div>
+
+  <div class="modal hidden" id="assignmentModal"><div class="modal-box"><button class="close" id="closeModal" type="button" aria-label="Close">×</button><h2 id="modalTitle">Add Assignment</h2><form id="assignmentForm"><label>Assignment title<input id="title" required placeholder="Example: SQL Assignment"></label><label>Course<select id="course" required></select></label><label>Description<textarea id="description" placeholder="What do you need to complete?"></textarea></label><div class="form-row"><label>Due date<input id="dueDate" type="date" required></label><label>Priority<select id="priority"><option>High</option><option selected>Medium</option><option>Low</option></select></label></div><button class="primary full" type="submit">Save Assignment</button></form></div></div>
+  <div class="modal hidden" id="courseModal"><div class="modal-box"><button class="close" id="closeCourseModal" type="button" aria-label="Close">×</button><h2>Add Course</h2><form id="courseForm"><label>Course name<input id="courseName" required placeholder="Example: Software Engineering"></label><button class="primary full" type="submit">Add Course</button></form></div></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="app.js"></script>
+  <script src="game.js"></script>
+  <script src="profile.js"></script>
 </body>
 </html>

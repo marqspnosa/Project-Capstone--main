@@ -44,6 +44,7 @@ async function showApp(user) {
   $("userEmail").textContent = user.email || "Signed in";
   $("connectionStatus").textContent = "Connected to Supabase. Your planner is saved online.";
   await loadData();
+  if (typeof loadGameBest === "function") await loadGameBest();
 }
 
 function showAuthMessage(message, isError = false) {
@@ -130,7 +131,7 @@ function renderCourses() {
   $("course").innerHTML = data.courses.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join("");
 }
 function renderAll() { renderDashboard(); renderAssignments(); renderCourses(); }
-function showView(view) { document.querySelectorAll(".view").forEach(v => v.classList.add("hidden")); $(view + "View").classList.remove("hidden"); document.querySelectorAll(".nav").forEach(n => n.classList.remove("active")); document.querySelector(`.nav[data-view="${view}"]`).classList.add("active"); $("pageTitle").textContent = ({dashboard:"Dashboard",assignments:"Assignments",courses:"Courses",settings:"Settings"})[view]; }
+function showView(view) { document.querySelectorAll(".view").forEach(v => v.classList.add("hidden")); $(view + "View").classList.remove("hidden"); document.querySelectorAll(".nav").forEach(n => n.classList.remove("active")); document.querySelector(`.nav[data-view="${view}"]`).classList.add("active"); $("pageTitle").textContent = ({dashboard:"Dashboard",assignments:"Assignments",courses:"Courses",game:"Study Quest",profile:"Profile",settings:"Settings"})[view]; if (view === "profile") loadProfile(); }
 function openAssignmentModal(id = null) {
   if (!data.courses.length) { showError("Add a course before adding an assignment."); showView("courses"); return; }
   const form = $("assignmentForm"); form.dataset.editId = id || "";
