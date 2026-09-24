@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section id="authView" class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo"><span class="logo-mark">✓</span> Study Planner</div>
+      <h1 id="authTitle">Welcome back</h1>
+      <p id="authSubtitle">Sign in to access your study planner.</p>
+      <div id="authMessage" class="auth-message hidden"></div>
+      <form id="authForm">
+        <label>Email address<input id="email" type="email" required autocomplete="email" placeholder="student@example.com"></label>
+        <label>Password<input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters"></label>
+        <button class="primary full" id="authSubmit" type="submit">Sign In</button>
+      </form>
+      <button class="auth-switch" id="authSwitch" type="button">Need an account? Sign up</button>
+    </div>
+  </section>
+  <aside class="sidebar hidden" id="sidebar">
+    <div class="logo"><span class="logo-mark">✓</span> Study Planner</div>
+    <button class="nav active" data-view="dashboard"><span>▦</span> Dashboard</button>
+    <button class="nav" data-view="assignments"><span>✓</span> Assignments</button>
+    <button class="nav" data-view="courses"><span>▤</span> Courses</button>
+    <button class="nav" data-view="settings"><span>⚙</span> Settings</button>
+    <div class="account-area"><small id="userEmail"></small><button id="signOutBtn" type="button">Sign Out</button></div>
+  </aside>
+  <main class="main hidden" id="appMain">
+    <header class="topbar"><div><h1 id="pageTitle">Dashboard</h1><p id="dateText"></p></div><button class="primary" id="addBtn">+ Add Assignment</button></header>
+    <div id="errorMessage" class="error-message hidden"></div>
+    <section id="dashboardView" class="view">
+      <div class="welcome"><div><div class="welcome-label">YOUR STUDY SPACE</div><h2>Welcome back, Student! 👋</h2><p>Stay organized and keep your schoolwork on track.</p></div><div class="welcome-art">📚</div></div>
+      <div class="stats">
+        <div class="card"><span class="stat-icon purple">▤</span><div><strong id="totalCount">0</strong><small>Total Tasks</small></div></div>
+        <div class="card"><span class="stat-icon orange">◷</span><div><strong id="dueCount">0</strong><small>Due Today</small></div></div>
+        <div class="card"><span class="stat-icon green">✓</span><div><strong id="completedCount">0</strong><small>Completed</small></div></div>
+        <div class="card"><span class="stat-icon red">!</span><div><strong id="overdueCount">0</strong><small>Overdue</small></div></div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Upcoming Assignments</h2><button class="text-btn" id="seeAllBtn">See all</button></div><div id="upcomingList"></div></div>
+    </section>
+    <section id="assignmentsView" class="view hidden">
+      <div class="toolbar"><input id="searchInput" type="search" placeholder="Search assignments..."><select id="filterPriority"><option value="all">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select><select id="filterStatus"><option value="all">All status</option><option>Pending</option><option>Completed</option></select></div>
+      <div class="panel"><div id="assignmentList"></div></div>
+    </section>
+    <section id="coursesView" class="view hidden"><div class="panel"><div class="panel-head"><h2>My Courses</h2><button class="primary small" id="addCourseBtn">+ Add Course</button></div><div id="courseList"></div></div></section>
+    <section id="settingsView" class="view hidden"><div class="panel settings"><h2>Settings</h2><p id="connectionStatus">Connecting to Supabase...</p><button class="danger" id="clearDataBtn">Clear All Data</button></div></section>
+  </main>
+  <div class="modal hidden" id="assignmentModal"><div class="modal-box"><button class="close" id="closeModal">×</button><h2 id="modalTitle">Add Assignment</h2><form id="assignmentForm"><label>Assignment title<input id="title" required placeholder="Example: SQL Assignment"></label><label>Course<select id="course" required></select></label><label>Description<textarea id="description" placeholder="What do you need to complete?"></textarea></label><div class="form-row"><label>Due date<input id="dueDate" type="date" required></label><label>Priority<select id="priority"><option>High</option><option selected>Medium</option><option>Low</option></select></label></div><button class="primary full" type="submit">Save Assignment</button></form></div></div>
+  <div class="modal hidden" id="courseModal"><div class="modal-box"><button class="close" id="closeCourseModal">×</button><h2>Add Course</h2><form id="courseForm"><label>Course name<input id="courseName" required placeholder="Example: Software Engineering"></label><button class="primary full" type="submit">Add Course</button></form></div></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
